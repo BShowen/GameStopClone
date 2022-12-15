@@ -1,5 +1,17 @@
 extends layout 
 
 block content 
-  h1 Console 
-  p #[strong Console id] #{id}
+  
+  .row 
+    .col 
+      .container-fluid.d-flex.flex-row.justify-content-center.pt-5
+        div 
+          img(src="/images/placeholder_image.jpg", alt="placeholder image")
+        div.p-3 
+          p.text-muted console 
+          h1= console.name
+          p.text-muted by #{console.manufacturer}
+          hr
+          h1 $#{console.price}
+          p= console.description 
+          p In Stock: #{console.stock}

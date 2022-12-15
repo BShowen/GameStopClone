@@ -1,4 +1,20 @@
 extends layout 
 
-block content 
-  h1 All Consoles
+block content
+  .row 
+    .col 
+      .d-flex.flex-row.justify-content-center
+        h1 Consoles
+  if consoleList.length > 0
+    .col
+      .d-flex.flex-row.justify-content-center
+        each console in consoleList
+          .card.p-1
+            .card-body 
+              p.m-0.text-muted= console.manufacturer
+              p.m-0 #[strong #{console.name}]
+              p.m-0= console.price
+            a.btn.btn-primary(href=console.url) View 
+  else 
+    p There are no consoles. 
+      a(href="#") You should add one!
