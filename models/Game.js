@@ -4,7 +4,6 @@ const { Schema } = mongoose;
 const gameSchema = new Schema({
   title: { type: String, required: true },
   price: { type: Number, required: true },
-  url: String,
   genre: { type: String, required: false },
   description: { type: String, required: true },
   stock: { type: Number, required: false, default: 0 },
