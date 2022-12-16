@@ -16,7 +16,7 @@ block content
                 placeholder="Console name",
                 name="name"
                 required
-                value= console===undefined ? "" : console.name
+                value= gameConsole===undefined ? "" : gameConsole.name
               )
             div.input-group.flex-nowrap.p-1
               span.text-muted.input-group-text#addon-wrapping by 
@@ -25,7 +25,7 @@ block content
                 placeholder="Manufacturer", 
                 name="manufacturer",
                 required
-                value= console===undefined ? "" : console.manufacturer
+                value= gameConsole===undefined ? "" : gameConsole.manufacturer
                 )
             hr
             div.input-group.p-1
@@ -36,7 +36,7 @@ block content
                 step=".01"
                 name="price",
                 required, 
-                value= console===undefined ? "" : console.price
+                value= gameConsole===undefined ? "" : gameConsole.price
                 )
             div.input-group.p-1
               textarea.form-control(
@@ -45,14 +45,14 @@ block content
                 rows="10", 
                 required,
                 ) 
-                  =console===undefined ? "" : console.description
+                  =gameConsole===undefined ? "" : gameConsole.description
             div.input-group.p-1
               span.input-group-text In Stock: 
               input.form-control(
                 type="number", 
                 name="stock", 
                 required, 
-                value= console===undefined ? "" : console.stock
+                value= gameConsole===undefined ? "" : gameConsole.stock
               )
 
             .d-flex.flew-row

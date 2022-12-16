@@ -1,0 +1,21 @@
+extends layout 
+
+block content
+  .row 
+    .col 
+      .d-flex.flex-row.justify-content-center
+        h1 Consoles
+  .row
+    .col
+      .d-flex.flex-row.justify-content-center
+        if gameConsoleList.length > 0
+          each gameConsole in gameConsoleList
+            .card.p-1
+              .card-body 
+                p.m-0.text-muted= gameConsole.manufacturer
+                p.m-0 #[strong #{gameConsole.name}]
+                p.m-0= gameConsole.price
+              a.btn.btn-primary(href=gameConsole.url) View 
+        else 
+          p There are no consoles. 
+            a(href="/gameConsoles/new") You should add one!
