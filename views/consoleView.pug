@@ -15,3 +15,7 @@ block content
           h1 $#{console.price}
           p= console.description 
           p In Stock: #{console.stock}
+
+          .d-flex.flew-row
+            a.btn.btn-dark.m-1(href=console.url + "/update") Update 
+            a.btn.btn-danger.m-1(href=console.url + "/delete") Delete 

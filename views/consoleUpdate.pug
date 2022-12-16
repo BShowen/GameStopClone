@@ -1,0 +1,60 @@
+extends layout 
+
+block content 
+  
+  .row 
+    .col 
+      .container-fluid.d-flex.flex-row.justify-content-center.pt-5
+        div 
+          img(src="/images/placeholder_image.jpg", alt="placeholder image")
+        div.p-3 
+          form(action="", method="POST") 
+            p.text-muted console  
+            div.input-group.p-1
+              input.form-control(
+                type="text", 
+                placeholder="Console name",
+                name="name"
+                required
+                value= console===undefined ? "" : console.name
+              )
+            div.input-group.flex-nowrap.p-1
+              span.text-muted.input-group-text#addon-wrapping by 
+              input.form-control(
+                type="text",
+                placeholder="Manufacturer", 
+                name="manufacturer",
+                required
+                value= console===undefined ? "" : console.manufacturer
+                )
+            hr
+            div.input-group.p-1
+              span.input-group-text#addon-wrapping $
+              input.form-control(
+                type="number", 
+                placeholder="Price",
+                step=".01"
+                name="price",
+                required, 
+                value= console===undefined ? "" : console.price
+                )
+            div.input-group.p-1
+              textarea.form-control(
+                name="description", 
+                cols="30", 
+                rows="10", 
+                required,
+                ) 
+                  =console===undefined ? "" : console.description
+            div.input-group.p-1
+              span.input-group-text In Stock: 
+              input.form-control(
+                type="number", 
+                name="stock", 
+                required, 
+                value= console===undefined ? "" : console.stock
+              )
+
+            .d-flex.flew-row
+              button.btn.btn-dark.m-1(type="submit") Submit
+              a.btn.btn-danger.m-1(href="/consoles") Cancel 
