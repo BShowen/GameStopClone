@@ -9,13 +9,13 @@ block content
           img(src="/images/placeholder_image.jpg", alt="placeholder image")
         div.p-3 
           p.text-muted console 
-          h1= console.name
-          p.text-muted by #{console.manufacturer}
+          h1= gameConsole.name
+          p.text-muted by #{gameConsole.manufacturer}
           hr
-          h1 $#{console.price}
-          p= console.description 
-          p In Stock: #{console.stock}
+          h1 $#{gameConsole.price}
+          p= gameConsole.description 
+          p In Stock: #{gameConsole.stock}
 
           .d-flex.flew-row
-            a.btn.btn-dark.m-1(href=console.url + "/update") Update 
-            a.btn.btn-danger.m-1(href=console.url + "/delete") Delete 
+            a.btn.btn-dark.m-1(href=gameConsole.url + "/update") Update 
+            a.btn.btn-danger.m-1(href=gameConsole.url + "/delete") Delete 

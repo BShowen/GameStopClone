@@ -26,7 +26,7 @@ exports.GET_gameConsoleView = (req, res, next) => {
 exports.GET_gameConsoleUpdate = (req, res, next) => {
   const id = mongoose.Types.ObjectId(req.params.consoleId);
   GameConsole.findById(id).exec((err, gameConsole) => {
-    return res.render("gameConsoleUpdate", {
+    return res.render("gameConsoleForm", {
       gameConsole,
     });
   });
@@ -49,6 +49,19 @@ exports.POST_gameConsoleUpdate = (req, res, next) => {
 exports.GET_gameConsoleDelete = (req, res, next) => {
   const id = mongoose.Types.ObjectId(req.params.consoleId);
   GameConsole.findByIdAndDelete(id).exec((err, gameConsole) => {
-    res.redirect("/consoles");
+    res.redirect("/gameConsoles");
+  });
+};
+
+// get request to create a new game console
+exports.GET_gameConsoleCreate = (req, res) => {
+  res.render("gameConsoleForm");
+};
+
+exports.POST_gameConsoleCreate = (req, res, next) => {
+  const gameConsole = new GameConsole({ ...req.body });
+  gameConsole.save((err, result) => {
+    if (err) return next(err);
+    res.redirect(result.url);
   });
 };

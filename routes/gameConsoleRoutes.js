@@ -6,6 +6,12 @@ const gameConsoleController = require("../controllers/gameConsoleController");
 // Handle GET request to display all consoles
 router.get("/", gameConsoleController.GET_gameConsoleList);
 
+// Handle GET request to create a new console
+router.get("/new", gameConsoleController.GET_gameConsoleCreate);
+
+// Handle POST request to create a new console
+router.post("/new", gameConsoleController.POST_gameConsoleCreate);
+
 // Handle GET request to update a console
 router.get("/:consoleId/update", gameConsoleController.GET_gameConsoleUpdate);
 

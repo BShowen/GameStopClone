@@ -44,8 +44,9 @@ block content
                 cols="30", 
                 rows="10", 
                 required,
-                ) 
-                  =gameConsole===undefined ? "" : gameConsole.description
+              )
+                if gameConsole!==undefined
+                  =gameConsole.description
             div.input-group.p-1
               span.input-group-text In Stock: 
               input.form-control(
@@ -57,4 +58,4 @@ block content
 
             .d-flex.flew-row
               button.btn.btn-dark.m-1(type="submit") Submit
-              a.btn.btn-danger.m-1(href="/consoles") Cancel 
+              a.btn.btn-danger.m-1(href="/gameConsoles") Cancel 
