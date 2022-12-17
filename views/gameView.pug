@@ -1,5 +1,22 @@
 extends layout 
 
 block content 
-  h1 Game
-  p #[strong Game id] #{id}
+
+  .row 
+    .col 
+      .container-fluid.d-flex.flex-row.justify-content-center.pt-5
+        div 
+          img(src="/images/placeholder_image.jpg", alt="placeholder image")
+        div.p-3 
+          p.text-muted Game
+          h1= game.title
+          p.text-muted for #{game.console.name}
+          hr
+          h1 $#{game.price}
+          p= game.description 
+          p Genre: #{game.genre}
+          p In Stock: #{game.stock}
+
+          .d-flex.flew-row
+            a.btn.btn-dark.m-1(href=game.url + "/update") Update 
+            a.btn.btn-danger.m-1(href=game.url + "/delete") Delete 

@@ -7,7 +7,7 @@ const gameSchema = new Schema({
   genre: { type: String, required: false },
   description: { type: String, required: true },
   stock: { type: Number, required: false, default: 0 },
-  console: { type: Schema.Types.ObjectID, ref: "Console" },
+  console: { type: Schema.Types.ObjectID, ref: "GameConsole" },
 });
 
 gameSchema.virtual("url").get(function () {

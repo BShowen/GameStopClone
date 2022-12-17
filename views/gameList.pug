@@ -1,4 +1,21 @@
 extends layout 
 
-block content 
-  h1 All Games
+block content
+  .row 
+    .col 
+      .d-flex.flex-row.justify-content-center
+        h1 Consoles
+  .row
+    if gameList.length > 0
+      each game in gameList
+        .col-lg-3.p-2
+          .d-flex.flex-row.justify-content-center
+            .card.p-1
+              .card-body 
+                p.m-0.text-muted= game.console.name
+                p.m-0 #[strong #{game.title}]
+                p.m-0= game.price
+              a.btn.btn-primary(href=game.url) View 
+    else 
+      p There are no consoles. 
+        a(href="/gameConsoles/new") You should add one!

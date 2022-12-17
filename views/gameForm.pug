@@ -1,0 +1,77 @@
+extends layout 
+
+block content 
+  
+  .row 
+    .col 
+      .container-fluid.d-flex.flex-row.justify-content-center.pt-5
+        div 
+          img(src="/images/placeholder_image.jpg", alt="placeholder image")
+        div.p-3 
+          form(action="", method="POST") 
+            p.text-muted Game 
+            
+            div.input-group.p-1
+              input.form-control(
+                type="text", 
+                placeholder="Game title",
+                name="title"
+                required
+                value= game===undefined ? "" : game.title
+              )
+            
+            div.input-group.flex-nowrap.p-1
+              span.text-muted.input-group-text#addon-wrapping for 
+              select.form-select(
+                name="console",
+                required
+              )
+                each gameConsole in gameConsoleList 
+                  if gameConsole.isSelected===true
+                    option(value=gameConsole._id, selected) #{gameConsole.name}
+                  else  
+                    option(value=gameConsole._id) #{gameConsole.name}
+            hr
+            
+            div.input-group.p-1
+              span.input-group-text#addon-wrapping $
+              input.form-control(
+                type="number", 
+                placeholder="Price",
+                step=".01"
+                name="price",
+                required, 
+                value= game===undefined ? "" : game.price
+                )
+            
+            div.input-group.p-1
+              textarea.form-control(
+                name="description", 
+                cols="30", 
+                rows="10", 
+                required,
+              )
+                if game!==undefined
+                  =game.description
+            
+            div.input-group.p-1
+              span.input-group-text Genre: 
+              input.form-control(
+                type="text", 
+                name="genre", 
+                required, 
+                value= game===undefined ? "" : game.genre
+              )
+            
+            div.input-group.p-1
+              span.input-group-text In Stock: 
+              input.form-control(
+                type="number", 
+                name="stock", 
+                required, 
+                value= game===undefined ? "" : game.stock
+              )
+
+            .d-flex.flew-row
+              button.btn.btn-dark.m-1(type="submit") Submit
+              a.btn.btn-danger.m-1(href="/games") Cancel 
