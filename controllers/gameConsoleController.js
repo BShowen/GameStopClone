@@ -16,13 +16,32 @@ exports.GET_gameConsoleList = (req, res, next) => {
 
 // get request for a single console
 exports.GET_gameConsoleView = (req, res, next) => {
-  const id = mongoose.Types.ObjectId(req.params.consoleId);
-  GameConsole.findById(id).exec((err, gameConsole) => {
-    if (err) return next(err);
-    return res.render("gameConsoleView", {
-      gameConsole,
-    });
-  });
+  // get all games associated with this console
+  // get all accessories associated with this console
+  const gameConsoleId = mongoose.Types.ObjectId(req.params.consoleId);
+  async.parallel(
+    {
+      accessory_list(callback) {
+        return Accessory.find({ console: gameConsoleId }).exec(callback);
+      },
+      game_list(callback) {
+        return Game.find({ console: gameConsoleId }).exec(callback);
+      },
+      gameConsole(callback) {
+        return GameConsole.findById(gameConsoleId).exec(callback);
+      },
+    },
+    (err, results) => {
+      if (err) return next(err);
+
+      const { accessory_list, game_list, gameConsole } = results;
+      return res.render("gameConsoleView", {
+        gameConsole,
+        accessoryList: accessory_list,
+        gameList: game_list,
+      });
+    }
+  );
 };
 
 // get request to update a console
@@ -77,6 +96,7 @@ exports.GET_gameConsoleDelete = (req, res, next) => {
           gameConsole,
           gameList: game_list,
           accessoryList: accessory_list,
+          showErrorMessage: true,
         });
       } else {
         // Else, delete the gameConsole and redirect to console list page.
