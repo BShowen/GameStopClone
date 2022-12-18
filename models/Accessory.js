@@ -9,4 +9,8 @@ const accessorySchema = new Schema({
   stock: { type: Number, required: true },
 });
 
+accessorySchema.virtual("url").get(function () {
+  return `/accessories/${this._id}`;
+});
+
 module.exports = mongoose.model("Accessory", accessorySchema);

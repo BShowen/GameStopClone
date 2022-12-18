@@ -1,0 +1,21 @@
+extends layout 
+
+block content 
+  
+  .row 
+    .col 
+      .container-fluid.d-flex.flex-row.justify-content-center.pt-5
+        div 
+          img(src="/images/placeholder_image.jpg", alt="placeholder image")
+        div.p-3 
+          p.text-muted Accessory
+          h1= accessory.name
+          p.text-muted for #{accessory.console.name}
+          hr
+          h1 $#{accessory.price}
+          p= accessory.description 
+          p In Stock: #{accessory.stock}
+
+          .d-flex.flew-row
+            a.btn.btn-dark.m-1(href=accessory.url + "/update") Update 
+            a.btn.btn-danger.m-1(href=accessory.url + "/delete") Delete 
