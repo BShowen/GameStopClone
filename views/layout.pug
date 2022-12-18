@@ -23,6 +23,7 @@ html.h-100
               li
                 a.dropdown-item(href="/games") All Games
                 a.dropdown-item(href="/games/new") Create Game
+                
           li.nav-item.dropdown
             a.nav-link.text-light.dropdown-toggle(
               href="#", 
@@ -34,6 +35,17 @@ html.h-100
               li
                 a.dropdown-item(href="/gameConsoles") All Consoles
                 a.dropdown-item(href="/gameConsoles/new") Create Console
+          li.nav-item.dropdown
+            a.nav-link.text-light.dropdown-toggle(
+              href="#", 
+              role="button", 
+              data-bs-toggle="dropdown", 
+              aria-expanded="false"
+            ) Accessories
+            ul.dropdown-menu 
+              li
+                a.dropdown-item(href="/accessories") All Accessories
+                a.dropdown-item(href="/accessories/new") Create Accessory
     .container-lg.flex-grow-1
       block content
     
