@@ -17,6 +17,8 @@ const storage = multer.diskStorage({
 });
 const upload = multer({ storage: storage });
 
+const fs = require("node:fs");
+
 // get request to list all game consoles
 exports.GET_gameConsoleList = (req, res, next) => {
   GameConsole.find({}).exec((err, gameConsole_list) => {
@@ -119,7 +121,16 @@ exports.GET_gameConsoleDelete = (req, res, next) => {
           showErrorMessage: true,
         });
       } else {
-        // Else, delete the gameConsole and redirect to console list page.
+        // delete the gameConsole record and delete the gameConsole photo.
+        if (gameConsole.hasImage) {
+          const absolutePath = path.normalize(
+            __dirname + "/../public" + gameConsole.img_path
+          );
+          fs.unlink(absolutePath, (err) => {
+            if (err) return next(err);
+          });
+        }
+
         GameConsole.deleteOne({ _id: id }).exec((err) => {
           if (err) return next(err);
 
