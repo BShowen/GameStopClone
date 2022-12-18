@@ -7,6 +7,10 @@ const gameConsoleSchema = new Schema({
   description: { type: String, required: true },
   stock: { type: Number, required: false, default: 0 },
   manufacturer: { type: String, required: true },
+  img_path: {
+    type: String,
+    default: "/images/placeholder_image.jpg",
+  },
 });
 
 gameConsoleSchema.virtual("url").get(function () {
