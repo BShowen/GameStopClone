@@ -12,10 +12,15 @@ block content
           h1= gameConsole.name
           p.text-muted by #{gameConsole.manufacturer}
           hr
-          h1 $#{gameConsole.price}
-          p= gameConsole.description 
-          p In Stock: #{gameConsole.stock}
+          if accessoryList || gameList
+            p Unable to delete this console. 
+            p You must delete all games and accessories belonging to this console before deleting it. 
+            a.btn.btn-primary(href=gameConsole.url) Back
+          else 
+            h1 $#{gameConsole.price}
+            p= gameConsole.description 
+            p In Stock: #{gameConsole.stock}
 
-          .d-flex.flew-row
+            .d-flex.flew-row
             a.btn.btn-dark.m-1(href=gameConsole.url + "/update") Update 
             a.btn.btn-danger.m-1(href=gameConsole.url + "/delete") Delete 

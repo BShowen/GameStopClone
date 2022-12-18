@@ -1,5 +1,8 @@
 const GameConsole = require("../models/GameConsole");
+const Accessory = require("../models/Accessory");
+const Game = require("../models/Game");
 const mongoose = require("mongoose");
+const async = require("async");
 
 // get request to list all consoles
 exports.GET_gameConsoleList = (req, res, next) => {
@@ -48,9 +51,43 @@ exports.POST_gameConsoleUpdate = (req, res, next) => {
 // get request to delete a console
 exports.GET_gameConsoleDelete = (req, res, next) => {
   const id = mongoose.Types.ObjectId(req.params.consoleId);
-  GameConsole.findByIdAndDelete(id).exec((err, gameConsole) => {
-    res.redirect("/gameConsoles");
-  });
+  async.parallel(
+    {
+      // get all games associated with this console.
+      game_list(callback) {
+        return Game.find({ console: id }).exec(callback);
+      },
+      // get all accessories associated with this console.
+      accessory_list(callback) {
+        return Accessory.find({ console: id }).exec(callback);
+      },
+      // get the gameConsole.
+      gameConsole(callback) {
+        return GameConsole.findById(id).exec(callback);
+      },
+    },
+    (err, results) => {
+      if (err) return next(err);
+
+      const { game_list, accessory_list, gameConsole } = results;
+      // If gameConsole has any games or accessories
+      if (game_list.length > 0 || accessory_list.length > 0) {
+        // render gameConsole view with error messages.
+        res.render("gameConsoleView", {
+          gameConsole,
+          gameList: game_list,
+          accessoryList: accessory_list,
+        });
+      } else {
+        // Else, delete the gameConsole and redirect to console list page.
+        GameConsole.deleteOne({ _id: id }).exec((err) => {
+          if (err) return next(err);
+
+          res.redirect("/gameConsoles");
+        });
+      }
+    }
+  );
 };
 
 // get request to create a new game console
