@@ -3,8 +3,10 @@ var express = require("express");
 var path = require("path");
 var cookieParser = require("cookie-parser");
 var logger = require("morgan");
+require("dotenv").config();
 const mongoose = require("mongoose");
-const mongoDB = `mongodb+srv://${process.env.USER}:${process.env.PASS}@express-inventory-app.zgh9lsl.mongodb.net/?retryWrites=true&w=majority`;
+const mongoDB =
+`mongodb+srv://${process.env.MONGO_USER}:${process.env.MONGO_PASS}@express-inventory-app.zgh9lsl.mongodb.net/?retryWrites=true&w=majority`;
 mongoose.connect(mongoDB, { useUnifiedTopology: true });
 const db = mongoose.connection;
 db.on("error", console.error.bind(console, "MongoDB connection error:"));
