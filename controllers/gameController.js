@@ -3,6 +3,8 @@ const GameConsole = require("../models/GameConsole");
 const mongoose = require("mongoose");
 const async = require("async");
 const upload = require("./helpers/multerUpload");
+const path = require("node:path");
+const fs = require("node:fs");
 
 // get request to list all games
 exports.GET_allGames = (req, res, next) => {
@@ -106,8 +108,19 @@ exports.POST_updateGame = (req, res, next) => {
 // get request to delete a game
 exports.GET_deleteGame = (req, res, next) => {
   const gameId = mongoose.Types.ObjectId(req.params.gameId);
-  Game.findByIdAndRemove(gameId).exec((err) => {
+  Game.findByIdAndRemove(gameId).exec((err, game) => {
     if (err) return next(err);
+    console.log(game);
+
+    // delete the game record and delete the game photo.
+    if (game.hasImage) {
+      const absolutePath = path.normalize(
+        __dirname + "/../public" + game.img_path
+      );
+      fs.unlink(absolutePath, (err) => {
+        if (err) return next(err);
+      });
+    }
 
     return res.redirect("/games");
   });
