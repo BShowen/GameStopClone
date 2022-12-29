@@ -1,8 +1,8 @@
-extends layout 
+extends layout
 
 block content
-  .row 
-    .col 
+  .row
+    .col
       .d-flex.flex-row.justify-content-center
         h1 Games
   .row
@@ -11,11 +11,12 @@ block content
         .col-lg-3.p-2
           .d-flex.flex-row.justify-content-center
             .card.p-1
-              .card-body 
+              .card-body.d-flex.flex-column
+                img(src=game.img_path, alt="Game photo")
                 p.m-0.text-muted= game.console.name
                 p.m-0 #[strong #{game.title}]
                 p.m-0= game.price
-              a.btn.btn-primary(href=game.url) View 
-    else 
-      p There are no games. 
+              a.btn.btn-primary(href=game.url) View
+    else
+      p There are no games.
         a(href="/games/new") You should add one!
