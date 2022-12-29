@@ -2,6 +2,7 @@ const Game = require("../models/Game");
 const GameConsole = require("../models/GameConsole");
 const mongoose = require("mongoose");
 const async = require("async");
+const upload = require("./helpers/multerUpload");
 
 // get request to list all games
 exports.GET_allGames = (req, res, next) => {
@@ -41,14 +42,20 @@ exports.GET_createGame = (req, res) => {
 };
 
 // post request to create a new game
-exports.POST_createGame = (req, res, next) => {
-  const game = new Game({ ...req.body });
-  game.save((err, newGame) => {
-    if (err) return next(err);
+exports.POST_createGame = [
+  upload.single("console-picture"),
+  (req, res, next) => {
+    const game = new Game({
+      ...req.body,
+      img_path: req.file ? `/uploads/${req.file.filename}` : undefined,
+    });
+    game.save((err, newGame) => {
+      if (err) return next(err);
 
-    res.redirect(newGame.url);
-  });
-};
+      res.redirect(newGame.url);
+    });
+  },
+];
 
 // get request to update a game
 exports.GET_updateGame = (req, res, next) => {
