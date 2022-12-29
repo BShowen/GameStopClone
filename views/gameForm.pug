@@ -1,7 +1,7 @@
 extends layout
 
 block content
-  
+
   .row
     .col
       .w-100.d-flex.flex-row.justify-content-center.pt-5
@@ -12,12 +12,21 @@ block content
             method="POST",
             enctype="multipart/form-data"
           )
-            .w-50.flex-shrink-1.border.border-1.border-secondary.rounded-3
-              div(
-              class="h-100 w-100 input-group d-flex justify-content-center align-items-center"
-              )
-                input.form-control(type="file", name="console-picture")
-            .w-50.flex-shrink-1
+            .w-50.flex-shrink-1.overflow-hidden.p-1
+              .h-100.w-100.input-group.d-flex.align-items-center.justify-content-center
+                if game && game.hasImage
+                  //- Render the image with a "remove" button.
+                  img(src=game.img_path, alt="Game image", class="img-fluid" id="game-image")
+                  button#remove-image.btn.btn-primary.w-50.rounded(type="button") Remove
+                  input.form-control(
+                    type="file",
+                    name="game-image",
+                    id="image-input",
+                    hidden
+                  )
+                else
+                  input.form-control(type="file", name="game-image")
+            .w-50.flex-shrink-1.p-5
               p.text-muted Game
               div.input-group.p-1
                 input.form-control(
@@ -74,6 +83,11 @@ block content
                   required,
                   value= game===undefined ? "" : game.stock
                 )
+              input(type="checkbox", name="delete-photo", hidden)
               .d-flex.flew-row
                 button.btn.btn-dark.m-1(type="submit") Submit
                 a.btn.btn-danger.m-1(href="/games") Cancel
+  //- Load script when the model has an image that can be deleted by the user.
+  if game && game.hasImage
+    script
+      include ../public/javascripts/gameForm.js

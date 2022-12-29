@@ -45,7 +45,7 @@ exports.GET_createGame = (req, res) => {
 
 // post request to create a new game
 exports.POST_createGame = [
-  upload.single("console-picture"),
+  upload.single("game-image"),
   (req, res, next) => {
     const game = new Game({
       ...req.body,
@@ -94,23 +94,76 @@ exports.GET_updateGame = (req, res, next) => {
 };
 
 // post request to update a game
-exports.POST_updateGame = (req, res, next) => {
-  // Find the game in teh BD.
-  const gameId = mongoose.Types.ObjectId(req.params.gameId);
-  const oldGame = new Game({ ...req.body, _id: gameId });
-  Game.findByIdAndUpdate(gameId, oldGame).exec((err, newGame) => {
-    if (err) return next(err);
+exports.POST_updateGame = [
+  upload.single("game-image"),
+  (req, _, next) => {
+    // Find the game in the DB.
+    const gameId = mongoose.Types.ObjectId(req.params.gameId);
+    Game.findById(gameId).exec((err, foundGame) => {
+      if (err) return next(err);
+      req.game = foundGame;
+      next();
+    });
+  },
+  (req, _, next) => {
+    if (req.body["delete-photo"]) {
+      const absolutePath = path.normalize(
+        __dirname + "/../public" + req.game.img_path
+      );
+      fs.unlink(absolutePath, (err) => {
+        if (err) return next(err);
+      });
+      // game.img_path must be set to this string, otherwise game.hasImage will
+      // return true when it should return false. What is happening is an
+      // attribute it being changed on the model, but the hasImage method is
+      // operating on the value before it was changed.
+      req.game.img_path = "/images/placeholder_image.jpg";
+    }
+    delete req.body["delete-photo"];
+    next();
+  },
+  (req, res, next) => {
+    const { game } = req;
+    // Create a new game model with params from the form.
+    const updatedGame = new Game({
+      ...req.body,
+      _id: game._id,
+      img_path: game.img_path,
+    });
 
-    res.redirect(newGame.url);
-  });
-};
+    if (req.file !== undefined && game.hasImage) {
+      // If game has image and user is uploading a new image.
+      // Remove old image. Update with new image.
+
+      // Delete old image
+      const absolutePath = path.normalize(
+        __dirname + "/../public" + game.img_path
+      );
+      fs.unlink(absolutePath, (err) => {
+        if (err) return next(err);
+      });
+
+      // Update the img_path on the updatedGame.
+      updatedGame.img_path = `/uploads/${req.file.filename}`;
+    } else if (req.file !== undefined && !game.hasImage) {
+      // If game doesn't have image and user is supplying one, use new image.
+      updatedGame.img_path = `/uploads/${req.file.filename}`;
+    }
+
+    // Perform the update.
+    Game.findByIdAndUpdate(game._id, updatedGame).exec((err, newGame) => {
+      if (err) return next(err);
+
+      res.redirect(newGame.url);
+    });
+  },
+];
 
 // get request to delete a game
 exports.GET_deleteGame = (req, res, next) => {
   const gameId = mongoose.Types.ObjectId(req.params.gameId);
   Game.findByIdAndRemove(gameId).exec((err, game) => {
     if (err) return next(err);
-    console.log(game);
 
     // delete the game record and delete the game photo.
     if (game.hasImage) {
