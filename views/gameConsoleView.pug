@@ -1,4 +1,5 @@
 extends layout 
+include mixins/gameDisplay.pug
 
 block content 
   
@@ -39,11 +40,4 @@ block content
                     p.m-0= accessory.price
                   a.btn.btn-primary(href=accessory.url) View  
           each game in gameList
-            .col-lg-3.p-2
-              .d-flex.flex-row.justify-content-center
-                .card.p-1
-                  .card-body 
-                    p.m-0.text-muted= game.console.name
-                    p.m-0 #[strong #{game.title}]
-                    p.m-0= game.price
-                  a.btn.btn-primary(href=game.url) View 
+            +gameDisplay(game)

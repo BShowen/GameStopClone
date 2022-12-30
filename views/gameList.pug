@@ -1,4 +1,5 @@
 extends layout
+include mixins/gameDisplay.pug
 
 block content
   .row
@@ -8,15 +9,7 @@ block content
   .row
     if gameList.length > 0
       each game in gameList
-        .col-lg-3.p-2
-          .d-flex.flex-row.justify-content-center
-            .card.p-1
-              .card-body.d-flex.flex-column
-                img(src=game.img_path, alt="Game photo")
-                p.m-0.text-muted= game.console.name
-                p.m-0 #[strong #{game.title}]
-                p.m-0= game.price
-              a.btn.btn-primary(href=game.url) View
+        +gameDisplay(game)
     else
       p There are no games.
         a(href="/games/new") You should add one!

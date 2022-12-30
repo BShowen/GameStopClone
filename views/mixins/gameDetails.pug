@@ -1,0 +1,16 @@
+mixin gameDetails(game)
+  div.w-50.flex-shrink-1.overflow-hidden.p-1
+    img(src=game.img_path, alt="game image" class="img-fluid")
+  .w-50.flex-shrink-1.p-5
+    p.text-muted Game
+    h1= game.title
+    p.text-muted for #{game.console.name}
+    hr
+    h1 $#{game.price}
+    p= game.description
+    p Genre: #{game.genre}
+    p In Stock: #{game.stock}
+
+    .d-flex.flew-row
+      a.btn.btn-dark.m-1(href=game.url + "/update") Update
+      a.btn.btn-danger.m-1(href=game.url + "/delete") Delete
