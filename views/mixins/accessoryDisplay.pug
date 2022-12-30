@@ -1,0 +1,9 @@
+mixin accessoryDisplay(accessory)
+  .col-lg-3.p-2
+    .d-flex.flex-row.justify-content-center
+      .card.p-1
+        .card-body
+          p.m-0.text-muted= accessory.console.name
+          p.m-0 #[strong #{accessory.name}]
+          p.m-0= accessory.price
+        a.btn.btn-primary(href=accessory.url) View

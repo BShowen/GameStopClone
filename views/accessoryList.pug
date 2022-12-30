@@ -1,21 +1,15 @@
 extends layout
+include mixins/accessoryDisplay.pug
 
 block content
-  .row 
-    .col 
+  .row
+    .col
       .d-flex.flex-row.justify-content-center
         h1 Accessories
   .row
     if accessoryList.length > 0
       each accessory in accessoryList
-        .col-lg-3.p-2
-          .d-flex.flex-row.justify-content-center
-            .card.p-1
-              .card-body 
-                p.m-0.text-muted= accessory.console.name
-                p.m-0 #[strong #{accessory.name}]
-                p.m-0= accessory.price
-              a.btn.btn-primary(href=accessory.url) View 
-    else 
-      p There are no accessories. 
+        +accessoryDisplay(accessory)
+    else
+      p There are no accessories.
         a(href="/accessories/new") You should add one!

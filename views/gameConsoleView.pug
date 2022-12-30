@@ -1,43 +1,36 @@
-extends layout 
+extends layout
 include mixins/gameDisplay.pug
+include mixins/accessoryDisplay.pug
 
-block content 
-  
-  .row 
-    .col 
+block content
+  .row
+    .col
       .w-100.d-flex.flex-row.justify-content-center.pt-5
         div
           img(src=gameConsole.img_path, alt="console image")
-        div.p-3 
-          p.text-muted console 
+        div.p-3
+          p.text-muted console
           h1= gameConsole.name
           p.text-muted by #{gameConsole.manufacturer}
           hr
           if showErrorMessage === true
-            p Unable to delete this console. 
-            p You must delete all games and accessories belonging to this console before deleting it. 
+            p Unable to delete this console.
+            p You must delete all games and accessories belonging to this console before deleting it.
             a.btn.btn-primary(href=gameConsole.url) Back
-          else 
+          else
             h1 $#{gameConsole.price}
-            p= gameConsole.description 
+            p= gameConsole.description
             p In Stock: #{gameConsole.stock}
 
             .d-flex.flew-row
-              a.btn.btn-dark.m-1(href=gameConsole.url + "/update") Update 
-              a.btn.btn-danger.m-1(href=gameConsole.url + "/delete") Delete 
+              a.btn.btn-dark.m-1(href=gameConsole.url + "/update") Update
+              a.btn.btn-danger.m-1(href=gameConsole.url + "/delete") Delete
 
-  if accessoryList || gameList  
-    .row 
+  if accessoryList || gameList
+    .row
       .col
         .w-100.d-flex.flex-row.justify-content-center
-          each accessory in accessoryList   
-            .col-lg-3.p-2
-              .d-flex.flex-row.justify-content-center
-                .card.p-1
-                  .card-body 
-                    p.m-0.text-muted= accessory.console.name
-                    p.m-0 #[strong #{accessory.name}]
-                    p.m-0= accessory.price
-                  a.btn.btn-primary(href=accessory.url) View  
+          each accessory in accessoryList
+            +accessoryDisplay(accessory)
           each game in gameList
             +gameDisplay(game)
