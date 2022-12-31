@@ -44,7 +44,7 @@ exports.GET_createGame = (req, res) => {
 
 // post request to create a new game
 exports.POST_createGame = [
-  upload.single("game-image"),
+  upload.single("model-image"),
   (req, res, next) => {
     const game = new Game({
       ...req.body,
@@ -94,7 +94,7 @@ exports.GET_updateGame = (req, res, next) => {
 
 // post request to update a game
 exports.POST_updateGame = [
-  upload.single("game-image"),
+  upload.single("model-image"),
   (req, _, next) => {
     // Find the game in the DB.
     const gameId = mongoose.Types.ObjectId(req.params.gameId);
