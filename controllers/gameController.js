@@ -131,21 +131,7 @@ exports.POST_updateGame = [
       img_path: game.img_path,
     });
 
-    if (req.file !== undefined && game.hasImage) {
-      // If game has image and user is uploading a new image.
-      // Remove old image. Update with new image.
-
-      // Delete old image
-      const absolutePath = path.normalize(
-        __dirname + "/../public" + game.img_path
-      );
-      fs.unlink(absolutePath, (err) => {
-        if (err) return next(err);
-      });
-
-      // Update the img_path on the updatedGame.
-      updatedGame.img_path = `/uploads/${req.file.filename}`;
-    } else if (req.file !== undefined && !game.hasImage) {
+    if (req.file) {
       // If game doesn't have image and user is supplying one, use new image.
       updatedGame.img_path = `/uploads/${req.file.filename}`;
     }
