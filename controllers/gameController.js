@@ -3,8 +3,7 @@ const GameConsole = require("../models/GameConsole");
 const mongoose = require("mongoose");
 const async = require("async");
 const upload = require("./helpers/multerUpload");
-const path = require("node:path");
-const fs = require("node:fs");
+const deleteImage = require("./helpers/deleteImage");
 
 // get request to list all games
 exports.GET_allGames = (req, res, next) => {
@@ -105,21 +104,29 @@ exports.POST_updateGame = [
       next();
     });
   },
+  // This function removes the model's image when the user has removed the image.
   (req, _, next) => {
+    // If the user wants to delete the image for this model.
     if (req.body["delete-photo"]) {
-      const absolutePath = path.normalize(
-        __dirname + "/../public" + req.game.img_path
-      );
-      fs.unlink(absolutePath, (err) => {
-        if (err) return next(err);
+      // Remove the form attr. that tells this method to delete the image.
+      // If not removed then there will be an unexpected attribute error
+      // from mongoose.
+      delete req.body["delete-photo"];
+
+      // Delete the image or log the error if image isn't found.
+      deleteImage({ model: req.game }, (err) => {
+        // An error deleting the photo is simply logged. Ideally this would be
+        // sent to some logger or ticketed for the dev to review. Because this
+        // is not a real world app I am simply logging the error.
+        console.log(err.message);
       });
+
       // game.img_path must be set to this string, otherwise game.hasImage will
       // return true when it should return false. What is happening is an
       // attribute it being changed on the model, but the hasImage method is
       // operating on the value before it was changed.
       req.game.img_path = "/images/placeholder_image.jpg";
     }
-    delete req.body["delete-photo"];
     next();
   },
   (req, res, next) => {
@@ -132,7 +139,7 @@ exports.POST_updateGame = [
     });
 
     if (req.file) {
-      // If game doesn't have image and user is supplying one, use new image.
+      // If the user is supplying an image.
       updatedGame.img_path = `/uploads/${req.file.filename}`;
     }
 
@@ -153,11 +160,11 @@ exports.GET_deleteGame = (req, res, next) => {
 
     // delete the game record and delete the game photo.
     if (game.hasImage) {
-      const absolutePath = path.normalize(
-        __dirname + "/../public" + game.img_path
-      );
-      fs.unlink(absolutePath, (err) => {
-        if (err) return next(err);
+      deleteImage({ model: game }, (err) => {
+        // An error deleting the photo is simply logged. Ideally this would be
+        // sent to some logger or ticketed for the dev to review. Because this
+        // is not a real world app I am simply logging the error.
+        console.log(err.message);
       });
     }
 
