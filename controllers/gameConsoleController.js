@@ -5,6 +5,7 @@ const mongoose = require("mongoose");
 const async = require("async");
 const path = require("node:path");
 const upload = require("./helpers/multerUpload");
+const deleteImage = require("./helpers/deleteImage");
 
 const fs = require("node:fs");
 
@@ -60,15 +61,53 @@ exports.GET_gameConsoleUpdate = (req, res, next) => {
 
 // post request to update a game console
 exports.POST_gameConsoleUpdate = [
-  upload.single("console-picture"),
-  (req, res, next) => {
-    const id = mongoose.Types.ObjectId(req.params.consoleId);
-    const gameConsole = new GameConsole({
-      ...req.body,
-      _id: id,
-      img_path: req.file ? `/uploads/${req.file.filename}` : undefined,
+  upload.single("model-image"),
+  (req, _, next) => {
+    // Find the console in the DB.
+    const consoleId = mongoose.Types.ObjectId(req.params.consoleId);
+    GameConsole.findById(consoleId).exec((err, gameConsole) => {
+      if (err) return next(err);
+      req.gameConsole = gameConsole;
+      next();
     });
-    GameConsole.findByIdAndUpdate(id, gameConsole).exec(
+  },
+  (req, _, next) => {
+    // If the user wants to delete the image for this model.
+    if (req.body["delete-photo"]) {
+      // Remove the form attr. that tells this method to delete the image.
+      // If not removed then there will be an unexpected attribute error
+      // from mongoose.
+      delete req.body["delete-photo"];
+      deleteImage({ model: req.gameConsole }, (err) => {
+        // An error deleting the photo is simply logged. Ideally this would be
+        // sent to some logger or ticketed for the dev to review. Because this
+        // is not a real world app I am simply logging the error.
+        console.log(err);
+      });
+
+      // img_path must be set to this string, otherwise game.hasImage will
+      // return true when it should return false. What is happening is an
+      // attribute it being changed on the model, but the hasImage method is
+      // operating on the value before it was changed.
+      req.gameConsole.img_path = "/images/placeholder_image.jpg";
+    }
+    next();
+  },
+  (req, res, next) => {
+    const { gameConsole } = req;
+    const updatedGameConsole = new GameConsole({
+      ...req.body,
+      _id: gameConsole._id,
+      img_path: gameConsole.img_path,
+    });
+
+    if (req.file) {
+      // If the user is supplying an image.
+      updatedGameConsole.img_path = `/uploads/${req.file.filename}`;
+    }
+
+    // Perform the update.
+    GameConsole.findByIdAndUpdate(gameConsole._id, updatedGameConsole).exec(
       (err, updatedGameConsole) => {
         if (err) return next(err);
 
@@ -137,7 +176,7 @@ exports.GET_gameConsoleCreate = (req, res) => {
 
 // post request to create a new game console
 exports.POST_gameConsoleCreate = [
-  upload.single("console-picture"),
+  upload.single("model-image"),
   (req, res, next) => {
     const gameConsole = new GameConsole({
       ...req.body,

@@ -12,12 +12,21 @@ block content
             method="POST",
             enctype="multipart/form-data"
             ) 
-            .w-50.flex-shrink-1.border.border-1.border-secondary.rounded-3
-              div(
-                class="h-100 w-100 input-group d-flex justify-content-center align-items-center"
-              )
-                input.form-control(type="file", name="console-picture")
-            .w-50.flex-shrink-1
+            .w-50.flex-shrink-1.p-1
+             .h-100.w-100.input-group.d-flex.align-items-center.justify-content-center
+                if gameConsole && gameConsole.hasImage
+                  //- Render the image with a "remove" button.
+                  img(src=gameConsole.img_path, alt="Console image", class="img-fluid" id="model-image")
+                  button#remove-image.btn.btn-primary.w-50.rounded(type="button") Remove
+                  input.form-control(
+                    type="file",
+                    name="model-image",
+                    id="image-input",
+                    hidden
+                  )
+                else
+                  input.form-control(type="file", name="model-image")
+            .w-50.flex-shrink-1.p-5
               p.text-muted Console  
               div.input-group.p-1
                 input.form-control(
@@ -64,7 +73,12 @@ block content
                   required, 
                   value= gameConsole===undefined ? "" : gameConsole.stock
                 )
-
+              input(type="checkbox", name="delete-photo", hidden)
               .d-flex.flew-row
                 button.btn.btn-dark.m-1(type="submit") Submit
-                a.btn.btn-danger.m-1(href="/gameConsoles") Cancel 
+                a.btn.btn-danger.m-1(href="/gameConsoles") Cancel
+
+  //- Load script when the model has an image that can be deleted by the user.
+  if gameConsole && gameConsole.hasImage
+    script
+      include ../public/javascripts/gameForm.js

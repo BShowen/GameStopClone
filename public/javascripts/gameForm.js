@@ -1,6 +1,6 @@
 (() => {
   const button = document.getElementById("remove-image");
-  const image = document.getElementById("game-image");
+  const image = document.getElementById("model-image");
   const imageInput = document.getElementById("image-input");
   const checkbox = document.getElementsByName("delete-photo")[0];
 
