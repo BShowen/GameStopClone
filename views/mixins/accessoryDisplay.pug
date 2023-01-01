@@ -3,6 +3,7 @@ mixin accessoryDisplay(accessory)
     .d-flex.flex-row.justify-content-center
       .card.p-1
         .card-body
+          img(src=accessory.img_path, alt="Accessory image", class="img-fluid")
           p.m-0.text-muted= accessory.gameConsole.name
           p.m-0 #[strong #{accessory.name}]
           p.m-0= accessory.price
