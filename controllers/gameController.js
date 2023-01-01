@@ -8,7 +8,7 @@ const deleteImage = require("./helpers/deleteImage");
 // get request to list all games
 exports.GET_allGames = (req, res, next) => {
   Game.find({})
-    .populate({ path: "console" })
+    .populate({ path: "gameConsole" })
     .exec((err, game_list) => {
       if (err) return next(err);
 
@@ -22,7 +22,7 @@ exports.GET_allGames = (req, res, next) => {
 exports.GET_gameView = (req, res) => {
   const id = req.params.gameId;
   Game.findById(id)
-    .populate({ path: "console" })
+    .populate({ path: "gameConsole" })
     .exec((err, game) => {
       if (err) return next(err);
 
@@ -68,7 +68,7 @@ exports.GET_updateGame = (req, res, next) => {
       game(callback) {
         const gameId = mongoose.Types.ObjectId(req.params.gameId);
         return Game.findById(gameId)
-          .populate({ path: "console" })
+          .populate({ path: "gameConsole" })
           .exec(callback);
       },
     },
@@ -76,7 +76,7 @@ exports.GET_updateGame = (req, res, next) => {
       if (err) return next(err);
 
       // Set the pre-selected game console selection for dropdown.
-      const game_consoleId = results.game.console._id.toString();
+      const game_consoleId = results.game.gameConsole._id.toString();
       results.gameConsole_list.some((gameConsole) => {
         if (gameConsole._id.toString() === game_consoleId) {
           gameConsole.isSelected = true;

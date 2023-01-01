@@ -4,7 +4,7 @@ mixin gameDisplay(game)
       .card.p-1
         .card-body.d-flex.flex-column
           img(src=game.img_path, alt="Game photo")
-          p.m-0.text-muted= game.console.name
+          p.m-0.text-muted= game.gameConsole.name
           p.m-0 #[strong #{game.title}]
           p.m-0= game.price
         a.btn.btn-primary(href=game.url) View
