@@ -4,65 +4,87 @@ block content
   
   .row 
     .col 
-      .container-fluid.d-flex.flex-row.justify-content-center.pt-5
-        div 
-          img(src="/images/placeholder_image.jpg", alt="placeholder image")
-        div.p-3 
-          form(action="", method="POST") 
-            p.text-muted Accessory 
-            
-            div.input-group.p-1
-              input.form-control(
-                type="text", 
-                placeholder="Accessory Name",
-                name="name"
-                required
-                value= accessory===undefined ? "" : accessory.name
-              )
-            
-            div.input-group.flex-nowrap.p-1
-              span.text-muted.input-group-text#addon-wrapping for 
-              select.form-select(
-                name="console",
-                required
-              )
-                each gameConsole in gameConsoleList 
-                  if gameConsole.isSelected===true
-                    option(value=gameConsole._id, selected) #{gameConsole.name}
-                  else  
-                    option(value=gameConsole._id) #{gameConsole.name}
-            hr
-            
-            div.input-group.p-1
-              span.input-group-text#addon-wrapping $
-              input.form-control(
-                type="number", 
-                placeholder="Price",
-                step=".01"
-                name="price",
-                required, 
-                value= accessory===undefined ? "" : accessory.price
+      .w-100.d-flex.flex-row.justify-content-center.pt-5
+        //- form container
+        .w-100
+          form.d-flex.flex-row.flex-no-wrap.gap-2(
+            action="",
+            method="POST", 
+            enctype="multipart/form-data"
+          ) 
+            .w-50.flex-shrink-1.p-1
+              .h-100.w-100.input-group.d-flex.align-items-center.justify-content-center
+                if accessory && accessory.hasImage
+                  //- Render the image with a "remove" button.
+                  img(src=accessory.img_path, alt="Accessory image", class="img-fluid" id="model-image")
+                  button#remove-image.btn.btn-primary.w-50.rounded(type="button") Remove
+                  input.form-control(
+                    type="file",
+                    name="model-image",
+                    id="image-input",
+                    hidden
+                  )
+                else
+                  input.form-control(type="file", name="model-image")
+            .w-50.flex-shrink-1.p-5
+              p.text-muted Accessory 
+              
+              div.input-group.p-1
+                input.form-control(
+                  type="text", 
+                  placeholder="Accessory Name",
+                  name="name"
+                  required
+                  value= accessory===undefined ? "" : accessory.name
                 )
-            
-            div.input-group.p-1
-              textarea.form-control(
-                name="description", 
-                cols="30", 
-                rows="10", 
-                required,
-              )
-                if accessory!==undefined
-                  =accessory.description
-            
-            div.input-group.p-1
-              span.input-group-text In Stock: 
-              input.form-control(
-                type="number", 
-                name="stock", 
-                required, 
-                value= accessory===undefined ? "" : accessory.stock
-              )
-
-            .d-flex.flew-row
-              button.btn.btn-dark.m-1(type="submit") Submit
-              a.btn.btn-danger.m-1(href="/accessories") Cancel 
+              
+              div.input-group.flex-nowrap.p-1
+                span.text-muted.input-group-text#addon-wrapping for 
+                select.form-select(
+                  name="console",
+                  required
+                )
+                  each gameConsole in gameConsoleList 
+                    if gameConsole.isSelected===true
+                      option(value=gameConsole._id, selected) #{gameConsole.name}
+                    else  
+                      option(value=gameConsole._id) #{gameConsole.name}
+              hr
+              
+              div.input-group.p-1
+                span.input-group-text#addon-wrapping $
+                input.form-control(
+                  type="number", 
+                  placeholder="Price",
+                  step=".01"
+                  name="price",
+                  required, 
+                  value= accessory===undefined ? "" : accessory.price
+                  )
+              
+              div.input-group.p-1
+                textarea.form-control(
+                  name="description", 
+                  cols="30", 
+                  rows="10", 
+                  required,
+                )
+                  if accessory!==undefined
+                    =accessory.description
+              
+              div.input-group.p-1
+                span.input-group-text In Stock: 
+                input.form-control(
+                  type="number", 
+                  name="stock", 
+                  required, 
+                  value= accessory===undefined ? "" : accessory.stock
+                )
+              input(type="checkbox", name="delete-photo", hidden)
+              .d-flex.flew-row
+                button.btn.btn-dark.m-1(type="submit") Submit
+                a.btn.btn-danger.m-1(href="/accessories") Cancel 
+  //- Load script when the model has an image that can be deleted by the user.
+  if accessory && accessory.hasImage
+    script
+      include ../public/javascripts/gameForm.js
