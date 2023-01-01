@@ -3,11 +3,8 @@ const Accessory = require("../models/Accessory");
 const Game = require("../models/Game");
 const mongoose = require("mongoose");
 const async = require("async");
-const path = require("node:path");
 const upload = require("./helpers/multerUpload");
 const deleteImage = require("./helpers/deleteImage");
-
-const fs = require("node:fs");
 
 // get request to list all game consoles
 exports.GET_gameConsoleList = (req, res, next) => {
@@ -151,11 +148,11 @@ exports.GET_gameConsoleDelete = (req, res, next) => {
       } else {
         // delete the gameConsole record and delete the gameConsole photo.
         if (gameConsole.hasImage) {
-          const absolutePath = path.normalize(
-            __dirname + "/../public" + gameConsole.img_path
-          );
-          fs.unlink(absolutePath, (err) => {
-            if (err) return next(err);
+          deleteImage({ model: gameConsole }, (err) => {
+            // An error deleting the photo is simply logged. Ideally this would be
+            // sent to some logger or ticketed for the dev to review. Because this
+            // is not a real world app I am simply logging the error.
+            console.log(err);
           });
         }
 
