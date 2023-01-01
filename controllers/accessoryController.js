@@ -55,7 +55,7 @@ exports.GET_accessoryUpdate = (req, res, next) => {
       },
       accessory(callback) {
         const id = mongoose.Types.ObjectId(req.params.id);
-        Accessory.findById(id).populate({ path: "console" }).exec(callback);
+        Accessory.findById(id).populate({ path: "gameConsole" }).exec(callback);
       },
     },
     (err, results) => {
@@ -63,7 +63,7 @@ exports.GET_accessoryUpdate = (req, res, next) => {
 
       const { gameConsole_list, accessory } = results;
       // set the selected console to the pre selected console
-      const accessoryConsoleId = accessory.console._id.toString();
+      const accessoryConsoleId = accessory.gameConsole._id.toString();
       gameConsole_list.some((gameConsole) => {
         if (gameConsole._id.toString() === accessoryConsoleId) {
           gameConsole.isSelected = true;
@@ -166,7 +166,7 @@ exports.GET_accessoryView = (req, res, next) => {
   // get accessory from the DB and populate console field.
   const id = mongoose.Types.ObjectId(req.params.id);
   Accessory.findById(id)
-    .populate({ path: "console" })
+    .populate({ path: "gameConsole" })
     .exec((err, accessory) => {
       if (err) return next(err);
 
