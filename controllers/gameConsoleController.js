@@ -24,10 +24,10 @@ exports.GET_gameConsoleView = (req, res, next) => {
   async.parallel(
     {
       accessory_list(callback) {
-        return Accessory.find({ console: gameConsoleId }).exec(callback);
+        return Accessory.find({ gameConsole: gameConsoleId }).exec(callback);
       },
       game_list(callback) {
-        return Game.find({ console: gameConsoleId }).exec(callback);
+        return Game.find({ gameConsole: gameConsoleId }).exec(callback);
       },
       gameConsole(callback) {
         return GameConsole.findById(gameConsoleId).exec(callback);
@@ -121,11 +121,11 @@ exports.GET_gameConsoleDelete = (req, res, next) => {
     {
       // get all games associated with this console.
       game_list(callback) {
-        return Game.find({ console: id }).exec(callback);
+        return Game.find({ gameConsole: id }).exec(callback);
       },
       // get all accessories associated with this console.
       accessory_list(callback) {
-        return Accessory.find({ console: id }).exec(callback);
+        return Accessory.find({ gameConsole: id }).exec(callback);
       },
       // get the gameConsole.
       gameConsole(callback) {
