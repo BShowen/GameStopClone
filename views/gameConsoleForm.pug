@@ -76,7 +76,7 @@ block content
               input(type="checkbox", name="delete-photo", hidden)
               .d-flex.flew-row
                 button.btn.btn-dark.m-1(type="submit") Submit
-                a.btn.btn-danger.m-1(href="/gameConsoles") Cancel
+                a.btn.btn-danger.m-1(href= gameConsole ? gameConsole.url : "/gameConsoles") Cancel
 
   //- Load script when the model has an image that can be deleted by the user.
   if gameConsole && gameConsole.hasImage

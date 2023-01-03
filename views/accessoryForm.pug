@@ -83,7 +83,7 @@ block content
               input(type="checkbox", name="delete-photo", hidden)
               .d-flex.flew-row
                 button.btn.btn-dark.m-1(type="submit") Submit
-                a.btn.btn-danger.m-1(href="/accessories") Cancel 
+                a.btn.btn-danger.m-1(href= accessory ? accessory.url : "/accessories") Cancel 
   //- Load script when the model has an image that can be deleted by the user.
   if accessory && accessory.hasImage
     script
