@@ -1,92 +1,91 @@
-extends layout
+extends siteLayout
+
+include pageLayout
 
 block content
-
-  .row
-    .col
-      .w-100.d-flex.flex-row.justify-content-center.pt-5
-        //- form container
-        .w-100
-          form.d-flex.flex-row.flex-no-wrap.gap-2(
-            action="",
-            method="POST",
-            enctype="multipart/form-data"
-          )
-            .w-50.flex-shrink-1.overflow-hidden.p-1
-              .h-100.w-100.input-group.d-flex.align-items-center.justify-content-center
-                if game && game.hasImage
-                  //- Render the image with a "remove" button.
-                  img(src=game.img_path, alt="Game image", class="img-fluid" id="model-image")
-                  button#remove-image.btn.btn-primary.w-50.rounded(type="button") Remove
-                  input.form-control(
-                    type="file",
-                    name="model-image",
-                    id="image-input",
-                    hidden
-                  )
+  +pageLayout
+    //- form container
+    .w-100
+      form.d-flex.flex-row.flex-no-wrap.gap-2(
+        action="",
+        method="POST",
+        enctype="multipart/form-data"
+      )
+        .w-50.flex-shrink-1.overflow-hidden.p-1
+          .h-100.w-100.input-group.d-flex.align-items-center.justify-content-center
+            if game && game.hasImage
+              //- Render the image with a "remove" button.
+              img(src=game.img_path, alt="Game image", class="img-fluid" id="model-image")
+              button#remove-image.btn.btn-primary.w-50.rounded(type="button") Remove
+              input.form-control(
+                type="file",
+                name="model-image",
+                id="image-input",
+                hidden
+              )
+            else
+              input.form-control(type="file", name="model-image")
+        .w-50.flex-shrink-1.p-5
+          p.text-muted Game
+          div.input-group.p-1
+            input.form-control(
+              type="text",
+              placeholder="Game title",
+              name="title"
+              required
+              value= game===undefined ? "" : game.title
+            )
+          div.input-group.flex-nowrap.p-1
+            span.text-muted.input-group-text#addon-wrapping for
+            select.form-select(
+              name="gameConsole",
+              required
+            )
+              each gameConsole in gameConsoleList
+                if gameConsole.isSelected===true
+                  option(value=gameConsole._id, selected) #{gameConsole.name}
                 else
-                  input.form-control(type="file", name="model-image")
-            .w-50.flex-shrink-1.p-5
-              p.text-muted Game
-              div.input-group.p-1
-                input.form-control(
-                  type="text",
-                  placeholder="Game title",
-                  name="title"
-                  required
-                  value= game===undefined ? "" : game.title
-                )
-              div.input-group.flex-nowrap.p-1
-                span.text-muted.input-group-text#addon-wrapping for
-                select.form-select(
-                  name="gameConsole",
-                  required
-                )
-                  each gameConsole in gameConsoleList
-                    if gameConsole.isSelected===true
-                      option(value=gameConsole._id, selected) #{gameConsole.name}
-                    else
-                      option(value=gameConsole._id) #{gameConsole.name}
-              hr
-              div.input-group.p-1
-                span.input-group-text#addon-wrapping $
-                input.form-control(
-                  type="number",
-                  placeholder="Price",
-                  step=".01"
-                  name="price",
-                  required,
-                  value= game===undefined ? "" : game.price
-                  )
-              div.input-group.p-1
-                textarea.form-control(
-                  name="description",
-                  cols="30",
-                  rows="10",
-                  required,
-                )
-                  if game!==undefined
-                    =game.description
-              div.input-group.p-1
-                span.input-group-text Genre:
-                input.form-control(
-                  type="text",
-                  name="genre",
-                  required,
-                  value= game===undefined ? "" : game.genre
-                )
-              div.input-group.p-1
-                span.input-group-text In Stock:
-                input.form-control(
-                  type="number",
-                  name="stock",
-                  required,
-                  value= game===undefined ? "" : game.stock
-                )
-              input(type="checkbox", name="delete-photo", hidden)
-              .d-flex.flew-row
-                button.btn.btn-dark.m-1(type="submit") Submit
-                a.btn.btn-danger.m-1(href= game ? game.url : "/games") Cancel
+                  option(value=gameConsole._id) #{gameConsole.name}
+          hr
+          div.input-group.p-1
+            span.input-group-text#addon-wrapping $
+            input.form-control(
+              type="number",
+              placeholder="Price",
+              step=".01"
+              name="price",
+              required,
+              value= game===undefined ? "" : game.price
+              )
+          div.input-group.p-1
+            textarea.form-control(
+              name="description",
+              cols="30",
+              rows="10",
+              required,
+            )
+              if game!==undefined
+                =game.description
+          div.input-group.p-1
+            span.input-group-text Genre:
+            input.form-control(
+              type="text",
+              name="genre",
+              required,
+              value= game===undefined ? "" : game.genre
+            )
+          div.input-group.p-1
+            span.input-group-text In Stock:
+            input.form-control(
+              type="number",
+              name="stock",
+              required,
+              value= game===undefined ? "" : game.stock
+            )
+          input(type="checkbox", name="delete-photo", hidden)
+          .d-flex.flew-row
+            button.btn.btn-dark.m-1(type="submit") Submit
+            a.btn.btn-danger.m-1(href= game ? game.url : "/games") Cancel
   //- Load script when the model has an image that can be deleted by the user.
   if game && game.hasImage
     script

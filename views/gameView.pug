@@ -1,8 +1,7 @@
-extends layout
-include mixins/gameDetails.pug
+extends siteLayout
+include mixins/gameDetails
+include pageLayout
 
 block content
-  .row
-      .col
-        .w-100.d-flex.flex-row.justify-content-center.pt-5
-          +gameDetails(game)
+  +pageLayout
+    +gameDetails

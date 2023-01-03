@@ -1,0 +1,19 @@
+//- This is the layout for most pages in the site. The pageLayout mixin is 
+//- simply a container where models are rendered into view. This way I can 
+//- change maintain the layout of this site easier. 
+
+mixin pageLayout
+  .row
+      .col
+        .w-100.d-flex.flex-row.justify-content-center.pt-5
+          //- This block is replaced by a model. 
+          block
+          
+  if gameConsole && (accessoryList || gameList)
+    .row
+      .col
+        .w-100.d-flex.flex-row.justify-content-center
+          each accessory in accessoryList
+            +accessoryDisplay(accessory)
+          each game in gameList
+            +gameDisplay(game)

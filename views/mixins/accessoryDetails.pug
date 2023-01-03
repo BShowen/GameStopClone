@@ -1,0 +1,15 @@
+mixin accessoryDetails 
+  .w-50.flex-shrink-1.overflow-hidden.p-1
+    img(src=accessory.img_path, alt="Accessory image", class="img-fluid")
+  .w-50.flex-shrink-1.p-5
+    p.text-muted Accessory
+    h1= accessory.name
+    p.text-muted for #{accessory.gameConsole.name}
+    hr
+    h1 $#{accessory.price}
+    p= accessory.description 
+    p In Stock: #{accessory.stock}
+
+    .d-flex.flew-row
+      a.btn.btn-dark.m-1(href=accessory.url + "/update") Update 
+      a.btn.btn-danger.m-1(href=accessory.url + "/delete") Delete 
