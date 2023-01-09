@@ -59,15 +59,7 @@ exports.GET_gameConsoleUpdate = (req, res, next) => {
 // post request to update a game console
 exports.POST_gameConsoleUpdate = [
   upload.single("model-image"),
-  (req, _, next) => {
-    // Find the console in the DB.
-    const consoleId = mongoose.Types.ObjectId(req.params.consoleId);
-    GameConsole.findById(consoleId).exec((err, gameConsole) => {
-      if (err) return next(err);
-      req.gameConsole = gameConsole;
-      next();
-    });
-  },
+  // This function remove the models image when the user has removed the image.
   (req, _, next) => {
     // If the user wants to delete the image for this model.
     if (req.body["delete-photo"]) {
@@ -75,28 +67,39 @@ exports.POST_gameConsoleUpdate = [
       // If not removed then there will be an unexpected attribute error
       // from mongoose.
       delete req.body["delete-photo"];
-      deleteImage({ model: req.gameConsole }, (err) => {
-        // An error deleting the photo is simply logged. Ideally this would be
-        // sent to some logger or ticketed for the dev to review. Because this
-        // is not a real world app I am simply logging the error.
-        console.log(err);
-      });
 
-      // img_path must be set to this string, otherwise game.hasImage will
-      // return true when it should return false. What is happening is an
-      // attribute it being changed on the model, but the hasImage method is
-      // operating on the value before it was changed.
-      req.gameConsole.img_path = "/images/placeholder_image.jpg";
+      const gameConsoleId = mongoose.Types.ObjectId(req.params.consoleId);
+      GameConsole.findById(gameConsoleId).exec((err, gameConsole) => {
+        if (err) return next(err);
+        // Delete the image or log the error if image isn't found.
+        deleteImage({ model: gameConsole }, (err) => {
+          // An error deleting the photo is simply logged. Ideally this would be
+          // sent to some logger or ticketed for the dev to review. Because this
+          // is not a real world app I am simply logging the error.
+          console.log(err);
+        });
+        // img_path must be set to this string, otherwise game.hasImage will
+        // return true when it should return false. What is happening is an
+        // attribute it being changed on the model, but the hasImage method is
+        // operating on the value before it was changed.
+        gameConsole.img_path = "/images/placeholder_image.jpg";
+        gameConsole.save((err) => {
+          if (err) return next(err);
+          next();
+        });
+      });
+    } else {
+      next();
     }
-    next();
   },
   (req, res, next) => {
-    const { gameConsole } = req;
-    const updatedGameConsole = new GameConsole({
-      ...req.body,
-      _id: gameConsole._id,
-      img_path: gameConsole.img_path,
-    });
+    const id = mongoose.Types.ObjectId(req.params.consoleId);
+    const updatedGameConsole = Object.assign({}, req.body, { _id: id });
+    // const updatedGameConsole = new GameConsole({
+    //   ...req.body,
+    //   _id: gameConsole._id,
+    //   img_path: gameConsole.img_path,
+    // });
 
     if (req.file) {
       // If the user is supplying an image.
@@ -104,13 +107,14 @@ exports.POST_gameConsoleUpdate = [
     }
 
     // Perform the update.
-    GameConsole.findByIdAndUpdate(gameConsole._id, updatedGameConsole).exec(
-      (err, updatedGameConsole) => {
-        if (err) return next(err);
+    GameConsole.findByIdAndUpdate(
+      updatedGameConsole._id,
+      updatedGameConsole
+    ).exec((err, updatedGameConsole) => {
+      if (err) return next(err);
 
-        res.redirect(updatedGameConsole.url);
-      }
-    );
+      res.redirect(updatedGameConsole.url);
+    });
   },
 ];
 

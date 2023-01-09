@@ -82,15 +82,6 @@ exports.GET_accessoryUpdate = (req, res, next) => {
 // POST request to update a new accessory
 exports.POST_accessoryUpdate = [
   upload.single("model-image"),
-  (req, _, next) => {
-    // Find the accessory in the DB.
-    const accessoryId = mongoose.Types.ObjectId(req.params.id);
-    Accessory.findById(accessoryId).exec((err, accessory) => {
-      if (err) return next(err);
-      req.accessory = accessory;
-      next();
-    });
-  },
   // This function removes the model's image when the user has removed the image
   (req, _, next) => {
     // If the user wants to delete the image for this model.
@@ -100,30 +91,35 @@ exports.POST_accessoryUpdate = [
       // from mongoose.
       delete req.body["delete-photo"];
 
-      // Delete the image or log the error if image isn't found
-      deleteImage({ model: req.accessory }, (err) => {
-        // An error deleting the photo is simply logged. Ideally this would be
-        // sent to some logger or ticketed for the dev to review. Because this
-        // is not a real world app I am simply logging the error.
-        console.log(err);
+      const accessoryId = mongoose.Types.ObjectId(req.params.id);
+      Accessory.findById(accessoryId).exec((err, accessory) => {
+        if (err) return next(err);
+        // Delete the image or log the error if image isn't found
+        deleteImage({ model: accessory }, (err) => {
+          // An error deleting the photo is simply logged. Ideally this would be
+          // sent to some logger or ticketed for the dev to review. Because this
+          // is not a real world app I am simply logging the error.
+          console.log(err);
+        });
+        // model.img_path must be set to this string, otherwise model.hasImage will
+        // return true when it should return false. What is happening is an
+        // attribute it being changed on the model, but the hasImage method is
+        // operating on the value before it was changed.
+        accessory.img_path = "/images/placeholder_image.jpg";
+        accessory.save((err) => {
+          if (err) return next(err);
+          next();
+        });
       });
-
-      // model.img_path must be set to this string, otherwise model.hasImage will
-      // return true when it should return false. What is happening is an
-      // attribute it being changed on the model, but the hasImage method is
-      // operating on the value before it was changed.
-      req.accessory.img_path = "/images/placeholder_image.jpg";
+    } else {
+      next();
     }
-    next();
   },
   (req, res, next) => {
-    const { accessory } = req;
-    // Create a new accessory model with params from the form.
-    const updatedAccessory = new Accessory({
-      ...req.body,
-      _id: accessory._id,
-      img_path: accessory.img_path,
-    });
+    // Create an updated model using the model from the DB and
+    // the params from the form (req.body)
+    const id = mongoose.Types.ObjectId(req.params.id);
+    const updatedAccessory = Object.assign({}, req.body, { _id: id });
 
     if (req.file) {
       // If the user is supplying an image.
@@ -131,7 +127,7 @@ exports.POST_accessoryUpdate = [
     }
 
     // Perform the update.
-    Accessory.findByIdAndUpdate(accessory._id, updatedAccessory).exec(
+    Accessory.findByIdAndUpdate(updatedAccessory._id, updatedAccessory).exec(
       (err, newAccessory) => {
         if (err) return next(err);
 
